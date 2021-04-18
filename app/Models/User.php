@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Scheduling\CustomerAddress;
 
 class User extends Authenticatable
 {
@@ -19,13 +20,19 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'type_document',
+        'identification',
         'name',
         'lastname',
         'email',
         'password',
         'age',
         'address',
-        'phone'
+        'phone',
+        'mobile',
+        'contact_name',
+        'billing_address',
+        'customer_type'
     ];
 
     /**
@@ -46,4 +53,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function customer_address()
+    {
+        return $this->hasMany(CustomerAddress::class, 'user', 'id');
+    }
 }

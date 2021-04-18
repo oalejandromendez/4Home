@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'root',
             'lastname' => '',
             'email' => 'root@mail.com',
-            'password' => bcrypt('123456'),
+            'password' => bcrypt('Inkmedia123'),
             'status' => 1
         ]);
 

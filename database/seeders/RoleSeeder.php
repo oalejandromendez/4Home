@@ -18,5 +18,8 @@ class RoleSeeder extends Seeder
         //Crear rol y asignar permisos superadmin
         $role = Role::create(['name' => 'SUPERADMIN', 'guard_name' => 'api']);
         $role->givePermissionTo(Permission::all());
+
+        $role = Role::create(['name' => 'CLIENTE', 'guard_name' => 'api']);
+        $role->givePermissionTo(Permission::all());
     }
 }
