@@ -26,7 +26,9 @@ class ServiceRequest extends FormRequest
         return [
             'name'              => 'required|string|max:50',
             'price'             => 'required',
-            'working_day'       => 'required'
+            'working_day'       => 'required',
+            'quantity'          => 'required',
+            'type'              => 'required'
         ];
     }
 
@@ -43,6 +45,8 @@ class ServiceRequest extends FormRequest
             'name.max'                  => 'El nombre del servicio debe ser de máximo 50 caracteres.',
             'price.required'            => 'El precio del servicio es requerido',
             'working_day.required'      => 'La jornada es requerida',
+            'quantity.required'         => 'La cantidad es requerida',
+            'type.required'             => 'El tipo es requerido',
         ];
     }
 }

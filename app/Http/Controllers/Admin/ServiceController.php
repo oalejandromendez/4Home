@@ -122,4 +122,15 @@ class ServiceController extends Controller
             return response()->json(['message' => 'Error'], 500);
         }
     }
+
+    public function findByTypeAndWorking($type, $working)
+    {
+        try {
+            $services = Service::where('working_day', $working)->where('type', $type)->get();
+            return new ServiceResource($services);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'WorkingDayController:findByTypeAndWorking', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }

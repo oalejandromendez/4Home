@@ -171,4 +171,25 @@ class CustomerController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function findCustomer(Request $request)
+    {
+        try {
+
+            $user = User::with('customer_address')
+            ->whereHas('roles', function (Builder $query) {
+                $query->where('name', 'CLIENTE');
+            })
+            ->whereHas('type_document', function (Builder $query) use($request) {
+                $query->where('id', $request->get('type_document'));
+            })
+            ->where('identification', $request->get('identification'))->first();
+
+            return response()->json($user, 200);
+
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'CustomerController:findCustomer', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }

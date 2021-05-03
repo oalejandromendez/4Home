@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class WorkingDayTable extends Migration
+class ReserveTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class WorkingDayTable extends Migration
      */
     public function up()
     {
-        Schema::create('working_day', function (Blueprint $table) {
+        Schema::create('reserve', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->time('init_hour');
-            $table->time('end_hour');
-            $table->unsignedInteger('service_type');
+            $table->unsignedInteger('user');
+            $table->unsignedInteger('customer_address');
+            $table->unsignedInteger('service');
+            $table->integer('type');
+            $table->date('date');
             $table->integer('status');
             $table->timestamps();
         });
@@ -31,6 +32,6 @@ class WorkingDayTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('working_day');
+        Schema::dropIfExists('reserve');
     }
 }

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class UserController extends Controller
 {
@@ -32,10 +34,29 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::with('roles')->where('id', '!=', Auth::id())->get();
+            $users = User::with('roles')->whereHas('roles', function (Builder $query) {
+                $query->where('name', '<>' ,'CLIENTE');
+            })->where('id', '!=', Auth::id())->get();
             return response()->json($users, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'UserController:index', $e->getMessage()));
+            return response()->json(['message' => 'Error'], 500);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try {
+            $user = User::with('roles')->where('id', $id)->first();
+            return response()->json($user, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'UserController:show', $e->getMessage()));
             return response()->json(['message' => 'Error'], 500);
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Common\DocumentType;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -53,6 +54,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function type_document()
+    {
+        return $this->hasOne(DocumentType::class, 'id', 'type_document');
+    }
 
     public function customer_address()
     {

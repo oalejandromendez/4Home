@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models\Scheduling;
 
+use App\Models\Admin\Service;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkingDay extends Model
+class Reserve extends Model
 {
     use HasFactory;
 
@@ -14,7 +15,7 @@ class WorkingDay extends Model
      *
      * @var string
      */
-    protected $table = 'working_day';
+    protected $table = 'reserve';
 
     /**
      * LLave primaria del modelo.
@@ -34,8 +35,8 @@ class WorkingDay extends Model
     protected $guarded = [];
 
 
-    public function service_type()
+    public function service()
     {
-        return $this->hasOne(ServiceType::class, 'id', 'service_type');
+        return $this->hasOne(Service::class, 'id', 'service');
     }
 }

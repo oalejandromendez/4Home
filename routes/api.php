@@ -14,11 +14,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'App\Http\Controllers\Auth\AuthController@login');
     Route::group(['middleware' => ['auth:api']], function() {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
     });
+});
+
+Route::group(['prefix' => 'singup'], function () {
+
+    /*Tipo de Documento*/
+    Route::get('documenttype', 'App\Http\Controllers\Common\DocumentTypeController@index');
+
+    /*Tipos de cliente*/
+    Route::get('customertype', 'App\Http\Controllers\Scheduling\SignUpController@customerType');
+
+    /*Clientes*/
+    Route::get('customer/filter/identification/{identification}', 'App\Http\Controllers\Scheduling\SignUpController@validateIdentification');
+
+    /*User*/
+    Route::post('user/filter/email', 'App\Http\Controllers\Scheduling\SignUpController@validateEmail');
+
+    /*Singup*/
+    Route::post('/', 'App\Http\Controllers\Scheduling\SignUpController@store');
+
 });
 
 
@@ -46,10 +66,15 @@ Route::group(['middleware' => 'auth:api'], function() {
     /*Cargos*/
     Route::resource('position', 'App\Http\Controllers\Admin\PositionController', ['except' => ['create', 'edit']]);
 
+    /*Tipo de servicio*/
+    Route::resource('servicetype', 'App\Http\Controllers\Admin\ServiceTypeController', ['except' => ['create', 'edit']]);
+
     /*Jornadas*/
+    Route::get('workingday/filter/servicetype/{id}', 'App\Http\Controllers\Admin\WorkingDayController@findByServiceType');
     Route::resource('workingday', 'App\Http\Controllers\Admin\WorkingDayController', ['except' => ['create', 'edit']]);
 
     /*Servicios*/
+    Route::get('service/filter/type/{type}/workingday/{working}', 'App\Http\Controllers\Admin\ServiceController@findByTypeAndWorking');
     Route::resource('service', 'App\Http\Controllers\Admin\ServiceController', ['except' => ['create', 'edit']]);
 
     /*Tipos de cliente*/
@@ -57,5 +82,13 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Clientes*/
     Route::get('customer/filter/identification/{identification}', 'App\Http\Controllers\Scheduling\CustomerController@validateIdentification');
+    Route::post('customer/find', 'App\Http\Controllers\Scheduling\CustomerController@findCustomer');
     Route::resource('customer', 'App\Http\Controllers\Scheduling\CustomerController', ['except' => ['create', 'edit']]);
+
+    /*Festivos*/
+    Route::resource('holiday', 'App\Http\Controllers\Admin\HolidayController', ['except' => ['create', 'edit']]);
+
+    /*Reservas*/
+    Route::get('reserve/filter/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findByCustomer');
+    Route::resource('reserve', 'App\Http\Controllers\Scheduling\ReserveController', ['except' => ['create', 'edit']]);
 });

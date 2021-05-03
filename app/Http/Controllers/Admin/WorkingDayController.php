@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\WorkingDayRequest;
 use App\Http\Resources\Admin\WorkingDayResource;
 use App\Models\Admin\WorkingDay;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,7 +32,7 @@ class WorkingDayController extends Controller
     public function index()
     {
         try {
-            return new WorkingDayResource(WorkingDay::all());
+            return new WorkingDayResource(WorkingDay::with('service_type')->get());
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'WorkingDayController:index', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
@@ -121,6 +122,19 @@ class WorkingDayController extends Controller
             DB::rollback();
             Log::error(sprintf('%s:%s', 'WorkingDayController:destroy', $e->getMessage()));
             return response()->json(['message' => 'Error'], 500);
+        }
+    }
+
+    public function findByServiceType($idServiceType)
+    {
+        try {
+            $workingDay = WorkingDay::whereHas('service_type', function (Builder $query) use($idServiceType) {
+                $query->where('id', $idServiceType);
+            })->get();
+            return new WorkingDayResource($workingDay);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'WorkingDayController:findByServiceType', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }

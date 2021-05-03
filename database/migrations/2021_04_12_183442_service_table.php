@@ -17,8 +17,10 @@ class ServiceTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('price');
-            $table->integer('working_day');
+            $table->unsignedInteger('working_day');
             $table->string('description')->nullable();
+            $table->integer('type');
+            $table->integer('quantity');
             $table->integer('status');
             $table->timestamps();
         });

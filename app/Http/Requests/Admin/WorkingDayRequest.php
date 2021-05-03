@@ -26,8 +26,8 @@ class WorkingDayRequest extends FormRequest
         return [
             'name'          => 'required|string|max:250',
             'init_hour'     => 'required',
-            'end_hour'      => 'required'
-
+            'end_hour'      => 'required',
+            'service_type'  => 'required'
         ];
     }
 
@@ -43,7 +43,8 @@ class WorkingDayRequest extends FormRequest
             'name.string'               => 'El nombre de la jornada debe ser un nombre valido.',
             'name.max'                  => 'El nombre de la jornada debe ser de máximo 50 caracteres.',
             'init_hour.required'        => 'La hora inicial de la jornada es requerida',
-            'end_hour.required'         => 'La hora final de la jornada es requerida'
+            'end_hour.required'         => 'La hora final de la jornada es requerida',
+            'service_type.required'     => 'El tipo de servicio es requerido'
         ];
     }
 }

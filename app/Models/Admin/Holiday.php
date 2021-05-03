@@ -5,7 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkingDay extends Model
+class Holiday extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class WorkingDay extends Model
      *
      * @var string
      */
-    protected $table = 'working_day';
+    protected $table = 'holiday';
 
     /**
      * LLave primaria del modelo.
@@ -32,10 +32,4 @@ class WorkingDay extends Model
 
 
     protected $guarded = [];
-
-
-    public function service_type()
-    {
-        return $this->hasOne(ServiceType::class, 'id', 'service_type');
-    }
 }

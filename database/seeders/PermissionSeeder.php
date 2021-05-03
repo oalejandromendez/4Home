@@ -64,5 +64,23 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'CREAR_CLIENTES', 'guard_name' => 'api']);
         Permission::create(['name' => 'MODIFICAR_CLIENTES', 'guard_name' => 'api']);
         Permission::create(['name' => 'ELIMINAR_CLIENTES', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_FESTIVOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_FESTIVOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_FESTIVOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_FESTIVOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_FESTIVOS', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_RESERVAS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_RESERVAS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_RESERVAS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_RESERVAS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_RESERVAS', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_TIPO_SERVICIO', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_TIPO_SERVICIO', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_TIPO_SERVICIO', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_TIPO_SERVICIO', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_TIPO_SERVICIO', 'guard_name' => 'api']);
     }
 }
