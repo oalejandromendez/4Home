@@ -3,6 +3,7 @@
 namespace App\Models\Scheduling;
 
 use App\Models\Admin\Service;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,8 +36,23 @@ class Reserve extends Model
     protected $guarded = [];
 
 
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user');
+    }
+
+    public function customer_address()
+    {
+        return $this->hasOne(CustomerAddress::class, 'id', 'customer_address');
+    }
+
     public function service()
     {
         return $this->hasOne(Service::class, 'id', 'service');
+    }
+
+    public function service_day()
+    {
+        return $this->hasMany(ReserveDay::class, 'reserve', 'id');
     }
 }

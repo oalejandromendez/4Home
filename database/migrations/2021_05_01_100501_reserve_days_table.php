@@ -16,7 +16,8 @@ class ReserveDaysTable extends Migration
         Schema::create('reserve_days', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('reserve');
-            $table->integer('day');
+            $table->integer('day')->nullable();
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }

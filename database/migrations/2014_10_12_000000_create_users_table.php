@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('mobile')->nullable();
             $table->string('contact_name')->nullable();
-            $table->string('address')->nullable()->nullable();
+            $table->string('address')->nullable();
             $table->string('billing_address')->nullable();
             $table->string('password');
             $table->unsignedInteger('customer_type')->nullable();

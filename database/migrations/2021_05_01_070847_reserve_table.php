@@ -19,7 +19,6 @@ class ReserveTable extends Migration
             $table->unsignedInteger('customer_address');
             $table->unsignedInteger('service');
             $table->integer('type');
-            $table->date('date');
             $table->integer('status');
             $table->timestamps();
         });

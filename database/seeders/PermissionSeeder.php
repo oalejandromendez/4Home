@@ -82,5 +82,9 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'CREAR_TIPO_SERVICIO', 'guard_name' => 'api']);
         Permission::create(['name' => 'MODIFICAR_TIPO_SERVICIO', 'guard_name' => 'api']);
         Permission::create(['name' => 'ELIMINAR_TIPO_SERVICIO', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_AGENDAMIENTOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_AGENDAMIENTOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_AGENDAMIENTOS', 'guard_name' => 'api']);
     }
 }
