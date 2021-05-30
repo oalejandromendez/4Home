@@ -83,8 +83,18 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'MODIFICAR_TIPO_SERVICIO', 'guard_name' => 'api']);
         Permission::create(['name' => 'ELIMINAR_TIPO_SERVICIO', 'guard_name' => 'api']);
 
+        Permission::create(['name' => 'ACCEDER_ESTADOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_ESTADOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_ESTADOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_ESTADOS', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_ESTADOS', 'guard_name' => 'api']);
+
         Permission::create(['name' => 'ACCEDER_AGENDAMIENTOS', 'guard_name' => 'api']);
         Permission::create(['name' => 'VER_AGENDAMIENTOS', 'guard_name' => 'api']);
         Permission::create(['name' => 'MODIFICAR_AGENDAMIENTOS', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_DISPONIBILIDAD', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_DISPONIBILIDAD', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_DISPONIBILIDAD', 'guard_name' => 'api']);
     }
 }

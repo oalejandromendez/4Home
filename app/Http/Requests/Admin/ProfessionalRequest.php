@@ -33,7 +33,8 @@ class ProfessionalRequest extends FormRequest
             'phone_contact'     => 'required',
             'salary'            => 'required',
             'email'             => 'required|email|' . Rule::unique('professional', 'email')->ignore($id),
-            'photo'             => 'required'
+            'photo'             => 'required',
+            'status'            => 'required'
         ];
     }
 
@@ -59,7 +60,8 @@ class ProfessionalRequest extends FormRequest
             'phone.required'            => 'El numero de telefono es requerido',
             'phone_contact.required'    => 'El numero de telefono de contacto es requerido',
             'salary.required'           => 'El salario es requerido',
-            'photo.required'            => 'La foto es requerida'
+            'photo.required'            => 'La foto es requerida',
+            'status.required'           => 'El estado es requerido'
         ];
     }
 }

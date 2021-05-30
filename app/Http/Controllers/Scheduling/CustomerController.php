@@ -61,6 +61,7 @@ class CustomerController extends Controller
             $user->fill($request->all());
             $user->password = Hash::make($request->get('password'));
             $user->status = 1;
+            $user->reset_password = 0;
             $user->save();
             $roles = $request->input('roles') ? $request->input('roles') : [];
             $user->assignRole($roles);
@@ -109,6 +110,7 @@ class CustomerController extends Controller
             }
 
             $user->status = $request->get('status');
+            $user->reset_password = 0;
             $user->update();
 
             $roles = $request->input('roles') ? $request->input('roles') : [];

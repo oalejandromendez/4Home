@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ReserveTable extends Migration
+class StatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class ReserveTable extends Migration
      */
     public function up()
     {
-        Schema::create('reserve', function (Blueprint $table) {
+        Schema::create('status', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user');
-            $table->unsignedInteger('customer_address');
-            $table->unsignedInteger('service');
-            $table->integer('type');
+            $table->string('name');
+            $table->string('colour');
+            $table->integer('openSchedule');
             $table->integer('status');
-            $table->unsignedInteger('professional')->nullable();
-            $table->unsignedInteger('supervisor')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class ReserveTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reserve');
+        Schema::dropIfExists('status');
     }
 }

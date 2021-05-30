@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('billing_address')->nullable();
             $table->string('password');
             $table->unsignedInteger('customer_type')->nullable();
+            $table->unsignedInteger('reset_password')->nullable();
             $table->integer('status');
             $table->rememberToken();
             $table->timestamps();

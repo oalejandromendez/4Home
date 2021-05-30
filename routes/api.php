@@ -39,6 +39,10 @@ Route::group(['prefix' => 'singup'], function () {
     /*Singup*/
     Route::post('/', 'App\Http\Controllers\Scheduling\SignUpController@store');
 
+    /*Restablecer contraseña*/
+    Route::patch('/resetpassword', 'App\Http\Controllers\Scheduling\SignUpController@resetPassword');
+
+
 });
 
 
@@ -46,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     /*Usuarios*/
     Route::get('user/permissions', 'App\Http\Controllers\Auth\UserController@permissions');
     Route::post('user/filter/email', 'App\Http\Controllers\Auth\UserController@validateEmail');
+    Route::patch('user/changepassword', 'App\Http\Controllers\Auth\UserController@changePassword');
     Route::resource('user', 'App\Http\Controllers\Auth\UserController', ['except' => ['create', 'edit']]);
 
     /*Roles*/
@@ -53,6 +58,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('roles', 'App\Http\Controllers\Admin\RolController', ['except' => ['create', 'edit']]);
 
     /*Profesionales*/
+    Route::post('professional/filter/availability', 'App\Http\Controllers\Admin\ProfessionalController@checkAvailability');
     Route::get('professional/filter/identification/{identification}', 'App\Http\Controllers\Admin\ProfessionalController@validateIdentification');
     Route::post('professional/filter/email', 'App\Http\Controllers\Admin\ProfessionalController@validateEmail');
     Route::resource('professional', 'App\Http\Controllers\Admin\ProfessionalController', ['except' => ['create', 'edit']]);
@@ -91,4 +97,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     /*Reservas*/
     Route::get('reserve/filter/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findByCustomer');
     Route::resource('reserve', 'App\Http\Controllers\Scheduling\ReserveController', ['except' => ['create', 'edit']]);
+
+    /*Agendamientos*/
+    Route::resource('schedule', 'App\Http\Controllers\Scheduling\ScheduleController', ['except' => ['create', 'edit']]);
+
+    /*Estados*/
+    Route::resource('status', 'App\Http\Controllers\Admin\StatusController', ['except' => ['create', 'edit']]);
 });

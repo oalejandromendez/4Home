@@ -2,17 +2,19 @@
 
 namespace App\Models\Admin;
 
-use App\Models\Scheduling\Reserve;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Professional extends Model
+class Status extends Model
 {
+    use HasFactory;
+
     /**
      * Tabla asociada con el modelo.
      *
      * @var string
      */
-    protected $table = 'professional';
+    protected $table = 'status';
 
     /**
      * LLave primaria del modelo.
@@ -34,21 +36,4 @@ class Professional extends Model
      * @var array
      */
     protected $guarded = [];
-
-    public function position()
-    {
-        return $this->hasOne(Position::class, 'id', 'position');
-    }
-
-    public function reserve()
-    {
-        return $this->hasMany(Reserve::class, 'professional', 'id');
-    }
-
-    public function status()
-    {
-        return $this->hasOne(Status::class, 'id', 'status');
-    }
-
-
 }

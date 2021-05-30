@@ -29,7 +29,7 @@ class ProfessionalTable extends Migration
             $table->date('admission_date');
             $table->date('retirement_date')->nullable();
             $table->unsignedInteger('position');
-            $table->integer('status');
+            $table->unsignedInteger('status');
             $table->timestamps();
         });
     }

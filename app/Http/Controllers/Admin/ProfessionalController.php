@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfessionalRequest;
 use App\Http\Resources\Admin\ProfessionalResource;
 use App\Models\Admin\Professional;
+use App\Models\Scheduling\Reserve;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProfessionalController extends Controller
 {
@@ -31,9 +34,30 @@ class ProfessionalController extends Controller
     public function index()
     {
         try {
-            return new ProfessionalResource(Professional::all());
+            return new ProfessionalResource(Professional::with('position', 'reserve.reserve_day', 'status')->get());
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ProfessionalController:index', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try {
+            $professional = Professional::with('position', 'reserve.reserve_day', 'status')->where('id', $id)->first();
+            if(isset($professional)) {
+                return response()->json(new ProfessionalResource($professional));
+            } else {
+                return response()->json(null);
+            }
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ProfessionalController:show', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
@@ -53,7 +77,6 @@ class ProfessionalController extends Controller
         try {
             $professional = new Professional();
             $professional->fill($request->all());
-            $professional->status = 1;
             $professional->save();
             DB::commit();
             return response()->json(200);
@@ -157,5 +180,61 @@ class ProfessionalController extends Controller
             Log::error(sprintf('%s:%s', 'ProfessionalController:validateEmail', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
+    }
+
+
+    public function checkAvailability(Request $request) {
+
+        try {
+
+            if($request->get('type') == 1) {
+
+                $dates = [];
+                $days = [];
+
+                foreach( $request->get('days') as $date) {
+                    array_push($dates, (new Carbon($date['date']))->toDateString());
+                    $day = (new Carbon($date['date']))->dayOfWeek;
+                    if($day == 0) {
+                        $day = 6;
+                    } else {
+                        $day--;
+                    }
+                    array_push($days, $day);
+                }
+
+                $professionals = Professional::whereHas('status', function (Builder $query) {
+                    $query->where('openSchedule', 1);
+                })->whereDoesntHave('reserve.reserve_day', function($query) use($dates, $days) {
+                    $query->whereIn('date', $dates)
+                    ->WhereIn('day', $days);
+                })->get();
+
+                return response()->json($professionals, 200);
+            }
+
+            if($request->get('type') == 2) {
+
+                $days = [];
+
+                foreach( $request->get('days') as $date) {
+                    array_push($days, $date['day']);
+                }
+
+                $professionals = Professional::
+                whereHas('status', function (Builder $query) {
+                    $query->where('openSchedule', 1);
+                })->whereDoesntHave('reserve.reserve_day', function($query) use($days) {
+                    $query->whereIn('day', $days);
+                })->get();
+
+                return response()->json($professionals, 200);
+            }
+
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
     }
 }

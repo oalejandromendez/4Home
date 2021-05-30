@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 
-
 class UserController extends Controller
 {
     public function __construct()
@@ -53,7 +52,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $user = User::with('roles')->where('id', $id)->first();
+            $user = User::with('roles', 'customer_address')->where('id', $id)->first();
             return response()->json($user, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'UserController:show', $e->getMessage()));
@@ -78,6 +77,7 @@ class UserController extends Controller
             $user->fill($request->all());
             $user->password = Hash::make($request->get('password'));
             $user->status = 1;
+            $user->reset_password = 0;
             $user->save();
             $roles = $request->input('roles') ? $request->input('roles') : [];
             $user->assignRole($roles);
@@ -112,6 +112,7 @@ class UserController extends Controller
             }
 
             $user->status = $request->get('status');
+            $user->reset_password = 0;
             $user->update();
 
             $roles = $request->input('roles') ? $request->input('roles') : [];
@@ -172,6 +173,33 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'UserController:permissions', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        if(!is_null($request->get('password')) && !is_null($request->get('id')) ) {
+            $user = User::find($request->get('id'));
+            if (!$user instanceof User) {
+                return response()->json(['message' => 'El usuario no se encuentra en la base de datos'], 404);
+            }
+            try {
+                DB::beginTransaction();
+                if ($request->get('password')) {
+                    $user->password = Hash::make($request->get('password'));
+                }
+                $user->reset_password = 0;
+                $user->update();
+
+                DB::commit();
+                return response()->json(200);
+            } catch (\Exception $e) {
+                DB::rollback();
+                Log::error(sprintf('%s:%s', 'UserController:changePassword', $e->getMessage()));
+                return response()->json(['message' => $e->getMessage()], 500);
+            }
+        } else {
+            return response()->json(['Error'], 500);
         }
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Scheduling\ReserveRequest;
 use App\Models\Scheduling\Reserve;
 use App\Models\Scheduling\ReserveDay;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,22 +32,14 @@ class ReserveController extends Controller
     public function index()
     {
         try {
-            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'service_day')->get();
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')
+            ->where('status', 1)
+            ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:index', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -76,6 +69,13 @@ class ReserveController extends Controller
                 if($reserve->type == 1) {
                     $newDay = new ReserveDay();
                     $newDay->date = $day['date'];
+                    $day = (new Carbon($day['date']))->dayOfWeek;
+                    if($day == 0) {
+                        $day = 6;
+                    } else {
+                        $day--;
+                    }
+                    $newDay->day = $day;
                     $newDay->reserve = $reserve->id;
                     $newDay->save();
                 }
@@ -98,28 +98,6 @@ class ReserveController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -130,7 +108,7 @@ class ReserveController extends Controller
     {
         $validated = $request->validated();
 
-        $reserve =  Reserve::with('service_day')->find($id);
+        $reserve =  Reserve::with('reserve_day')->find($id);
 
         if (!$reserve instanceof Reserve) {
             return response()->json(['message' => 'La reserva no se encuentra en la base de datos'], 404);
@@ -139,7 +117,7 @@ class ReserveController extends Controller
 
             DB::beginTransaction();
 
-            $reserve->service_day()->delete();
+            $reserve->reserve_day()->delete();
 
             $reserve->user = $request->get('user');
             $reserve->customer_address = $request->get('customer_address');
@@ -153,6 +131,13 @@ class ReserveController extends Controller
                 if($reserve->type == 1) {
                     $newDay = new ReserveDay();
                     $newDay->date = $day['date'];
+                    $day = (new Carbon($day['date']))->dayOfWeek;
+                    if($day == 0) {
+                        $day = 6;
+                    } else {
+                        $day--;
+                    }
+                    $newDay->day = $day;
                     $newDay->reserve = $reserve->id;
                     $newDay->save();
                 }
@@ -207,7 +192,7 @@ class ReserveController extends Controller
     public function findByCustomer($id)
     {
         try {
-            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'service_day')->where('user', $id)->get();
+            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day')->where('user', $id)->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));

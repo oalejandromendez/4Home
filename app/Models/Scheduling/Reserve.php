@@ -2,6 +2,7 @@
 
 namespace App\Models\Scheduling;
 
+use App\Models\Admin\Professional;
 use App\Models\Admin\Service;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,8 +52,13 @@ class Reserve extends Model
         return $this->hasOne(Service::class, 'id', 'service');
     }
 
-    public function service_day()
+    public function reserve_day()
     {
         return $this->hasMany(ReserveDay::class, 'reserve', 'id');
+    }
+
+    public function professional()
+    {
+        return $this->hasOne(Professional::class, 'id', 'professional');
     }
 }
