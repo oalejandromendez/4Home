@@ -41,8 +41,12 @@ Route::group(['prefix' => 'singup'], function () {
 
     /*Restablecer contraseña*/
     Route::patch('/resetpassword', 'App\Http\Controllers\Scheduling\SignUpController@resetPassword');
+});
 
+Route::group(['prefix' => 'payment'], function () {
 
+    /*Confirmación*/
+    Route::post('confirmation', 'App\Http\Controllers\Finance\PaymentController@confirmation');
 });
 
 
@@ -104,10 +108,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Estados*/
     Route::resource('status', 'App\Http\Controllers\Admin\StatusController', ['except' => ['create', 'edit']]);
-
-    /*Pagos*/
-    Route::get('payment/filter/banks', 'App\Http\Controllers\Scheduling\PaymentController@banksList');
-    Route::resource('payment', 'App\Http\Controllers\Scheduling\PaymentController', ['except' => ['create', 'edit']]);
 
     /*Codigos promocionales*/
     Route::patch('promocodes/disable', 'App\Http\Controllers\Finance\PromocodesController@disable');

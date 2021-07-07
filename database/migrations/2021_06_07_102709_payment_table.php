@@ -16,16 +16,24 @@ class PaymentTable extends Migration
         Schema::create('payment', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('reserve');
-            $table->integer('type');
-            $table->string('name');
-            $table->string('type_document');
-            $table->string('document');
-            $table->string('phone');
-            $table->string('total');
-            $table->string('authorizationCode')->nullable();
-            $table->string('orderId')->nullable();
-            $table->string('state');
-            $table->string('trazabilityCode')->nullable();
+            $table->string('reference');
+            $table->unsignedInteger('promocode')->nullable();
+            $table->string('identification')->nullable();
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('reference_sale')->nullable();
+            $table->string('state_pol')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string('payment_method_type')->nullable();
+            $table->string('installments_number')->nullable();
+            $table->string('transaction_date')->nullable();
+            $table->string('cus')->nullable();
+            $table->string('pse_bank')->nullable();
+            $table->string('authorization_code')->nullable();
+            $table->string('ip')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->string('payment_method_name')->nullable();
             $table->timestamps();
         });
     }
