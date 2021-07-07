@@ -34,7 +34,7 @@ class ProfessionalController extends Controller
     public function index()
     {
         try {
-            return new ProfessionalResource(Professional::with('position', 'reserve.reserve_day', 'status')->get());
+            return new ProfessionalResource(Professional::with('position', 'reserve.reserve_day', 'reserve.service.working_day' ,'status')->get());
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ProfessionalController:index', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
@@ -50,7 +50,7 @@ class ProfessionalController extends Controller
     public function show($id)
     {
         try {
-            $professional = Professional::with('position', 'reserve.reserve_day', 'status')->where('id', $id)->first();
+            $professional = Professional::with('position', 'reserve.reserve_day', 'reserve.service.working_day' ,'status')->where('id', $id)->first();
             if(isset($professional)) {
                 return response()->json(new ProfessionalResource($professional));
             } else {

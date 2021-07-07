@@ -61,4 +61,9 @@ class Reserve extends Model
     {
         return $this->hasOne(Professional::class, 'id', 'professional');
     }
+
+    public function supervisor()
+    {
+        return $this->hasOne(Professional::class, 'id', 'supervisor');
+    }
 }

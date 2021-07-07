@@ -15,6 +15,7 @@ class ReserveTable extends Migration
     {
         Schema::create('reserve', function (Blueprint $table) {
             $table->id();
+            $table->string('reference');
             $table->unsignedInteger('user');
             $table->unsignedInteger('customer_address');
             $table->unsignedInteger('service');
@@ -22,6 +23,7 @@ class ReserveTable extends Migration
             $table->integer('status');
             $table->unsignedInteger('professional')->nullable();
             $table->unsignedInteger('supervisor')->nullable();
+            $table->timestamp('scheduling_date')->nullable();
             $table->timestamps();
         });
     }

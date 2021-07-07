@@ -65,6 +65,7 @@ class ScheduleController extends Controller
             $reserve->professional = $request->get('professional');
             $reserve->supervisor = $request->get('supervisor');
             $reserve->status = 2;
+            $reserve->scheduling_date = new Carbon();
             $reserve->update();
 
             foreach($request->get('days') as $day) {

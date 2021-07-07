@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Reservas*/
     Route::get('reserve/filter/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findByCustomer');
+    Route::get('reserve/filter/reference/{reference}', 'App\Http\Controllers\Scheduling\ReserveController@findByReference');
     Route::resource('reserve', 'App\Http\Controllers\Scheduling\ReserveController', ['except' => ['create', 'edit']]);
 
     /*Agendamientos*/
@@ -103,4 +104,12 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Estados*/
     Route::resource('status', 'App\Http\Controllers\Admin\StatusController', ['except' => ['create', 'edit']]);
+
+    /*Pagos*/
+    Route::get('payment/filter/banks', 'App\Http\Controllers\Scheduling\PaymentController@banksList');
+    Route::resource('payment', 'App\Http\Controllers\Scheduling\PaymentController', ['except' => ['create', 'edit']]);
+
+    /*Codigos promocionales*/
+    Route::patch('promocodes/disable', 'App\Http\Controllers\Finance\PromocodesController@disable');
+    Route::resource('promocodes', 'App\Http\Controllers\Finance\PromocodesController', ['except' => ['create', 'edit']]);
 });

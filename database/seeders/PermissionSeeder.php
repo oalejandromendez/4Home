@@ -96,5 +96,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'ACCEDER_DISPONIBILIDAD', 'guard_name' => 'api']);
         Permission::create(['name' => 'VER_DISPONIBILIDAD', 'guard_name' => 'api']);
         Permission::create(['name' => 'MODIFICAR_DISPONIBILIDAD', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_CODIGOS_PROMOCIONALES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_CODIGOS_PROMOCIONALES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_CODIGOS_PROMOCIONALES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_CODIGOS_PROMOCIONALES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_CODIGOS_PROMOCIONALES', 'guard_name' => 'api']);
     }
 }

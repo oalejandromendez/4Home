@@ -62,6 +62,9 @@ class ReserveController extends Controller
             $reserve->service = $request->get('service');
             $reserve->type = $request->get('type');
             $reserve->status = 1;
+            $now = Carbon::now()->timestamp;
+            $reference = substr($now, -6);
+            $reserve->reference = $reference.$reserve->id;
             $reserve->save();
 
             foreach($request->get('days') as $day) {
@@ -192,10 +195,22 @@ class ReserveController extends Controller
     public function findByCustomer($id)
     {
         try {
-            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day')->where('user', $id)->get();
+            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('user', $id)->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function findByReference($reference)
+    {
+        try {
+            $reservation = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('reference', $reference)->first();
+            
+            return response()->json($reservation, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:findByReference', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
