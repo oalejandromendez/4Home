@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Scheduling;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Scheduling\ScheduleRequest;
+use App\Mail\CustomerServiceSchedulingEmail;
+use App\Models\Admin\Service;
 use App\Models\Scheduling\Reserve;
 use App\Models\Scheduling\ReserveDay;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ScheduleController extends Controller
 {
@@ -92,6 +96,14 @@ class ScheduleController extends Controller
                 }
             }
 
+            $user = User::find($reserve->user);
+            $service = Service::find($reserve->service);
+            if(isset($user->email)) {
+                $fullname = $user->name . " " . $user->lastname;
+            $reference = $reserve->reference;
+                $value = $service->price * $service->quantity;
+                Mail::to($user->email)->send(new CustomerServiceSchedulingEmail($fullname, $reference, $value));
+            }
             DB::commit();
             return response()->json(200);
         } catch (\Exception $e) {

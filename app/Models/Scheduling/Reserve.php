@@ -7,6 +7,7 @@ use App\Models\Admin\Service;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Reserve extends Model
 {
@@ -65,5 +66,29 @@ class Reserve extends Model
     public function supervisor()
     {
         return $this->hasOne(Professional::class, 'id', 'supervisor');
+    }
+
+    /**
+     * Obtiene las reservas del dia siguiente al actual para enviar por correo a los profesionales
+     *
+     * @var array
+     */
+    public static function reservesProfessionals($date, $day)
+    {
+        $query = self::query();
+        $query->select('reserve.reference', DB::raw('CONCAT(users.name, " ", users.lastname) as client'),
+            DB::raw('CONCAT( professional.name, " ", professional.lastname) as fullname'), 'professional.email', 'customer_address.address',
+            'working_day.name as workingDay');
+        $query->leftJoin('reserve_days', 'reserve.id', '=', 'reserve_days.reserve');
+        $query->leftJoin('service', 'service.id', '=', 'reserve.service');
+        $query->leftJoin('working_day', 'working_day.id', '=', 'service.working_day');
+        $query->leftJoin('users', 'users.id', '=', 'reserve.user');
+        $query->leftJoin('customer_address', 'customer_address.id', '=', 'reserve.customer_address');
+        $query->leftJoin('professional', 'professional.id', '=', 'reserve.professional');
+        $query->leftJoin('status', 'professional.status', '=', 'status.id');
+        $query->where('reserve.status', 6);
+        $query->where('status.openSchedule', 1);
+        $query->whereRaw("(date = '".$date."' OR (date IS NULL AND day = ".$day."))");
+        return $query->get();
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Finance;
 use App\Http\Controllers\Controller;
 use App\Models\Finance\Payment;
 use App\Models\Scheduling\Reserve;
+use App\Models\User;
+use Gabievi\Promocodes\Promocodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,9 +18,14 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try {
             $payment = new Payment();
-
-            $payment->reserve = $request->get('extra1');
-            $payment->promocode = $request->get('extra2');
+            $payment->reserve = $request->get('extra2');
+            if ($request->has('extra3')) {
+                $promocode = Promocodes::check($request->get('extra3'));
+                if ($promocode instanceof Promocodes) {
+                    User::redeemCode($promocode->code, $callback = null);
+                    $payment->promocode = $promocode->id;
+                }
+            }
             $payment->name = $request->get('nickname_buyer');
             $payment->email = $request->get('email_buyer');
             $payment->phone = $request->get('phone');
@@ -34,6 +41,7 @@ class PaymentController extends Controller
             $payment->ip = $request->get('ip');
             $payment->transaction_id = $request->get('transaction_id');
             $payment->payment_method_name = $request->get('payment_method_name');
+            $payment->value = $request->get('value');
             $payment->save();
             $reserve =  Reserve::where('reference', $request->get('extra1'))->first();
             if ($reserve instanceof Reserve) {

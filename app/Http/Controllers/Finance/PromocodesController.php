@@ -81,4 +81,20 @@ class PromocodesController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function check(Request $request)
+    {
+        try {
+            return Promocodes::check($request->get('code'));
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'PromocodesController:check', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }

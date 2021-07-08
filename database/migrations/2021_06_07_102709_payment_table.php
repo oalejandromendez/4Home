@@ -34,6 +34,7 @@ class PaymentTable extends Migration
             $table->string('ip')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('payment_method_name')->nullable();
+            $table->string('value')->nullable();
             $table->timestamps();
         });
     }

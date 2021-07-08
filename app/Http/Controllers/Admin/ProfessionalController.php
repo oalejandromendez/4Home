@@ -183,8 +183,8 @@ class ProfessionalController extends Controller
     }
 
 
-    public function checkAvailability(Request $request) {
-
+    public function checkAvailability(Request $request)
+    {
         try {
 
             if($request->get('type') == 1) {

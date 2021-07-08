@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\InactiveReservationCommand',
+        'App\Console\Commands\ServicesProfessionalsCommand'
     ];
 
     /**
@@ -24,7 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('4home:inactive')->everyMinute();
+        $schedule->command('4home:schedule')->daily();
     }
 
     /**

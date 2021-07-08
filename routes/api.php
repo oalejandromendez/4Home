@@ -111,5 +111,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Codigos promocionales*/
     Route::patch('promocodes/disable', 'App\Http\Controllers\Finance\PromocodesController@disable');
+    Route::patch('promocodes/check', 'App\Http\Controllers\Finance\PromocodesController@check');
     Route::resource('promocodes', 'App\Http\Controllers\Finance\PromocodesController', ['except' => ['create', 'edit']]);
 });
