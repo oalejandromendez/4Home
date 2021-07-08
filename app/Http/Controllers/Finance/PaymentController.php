@@ -19,7 +19,7 @@ class PaymentController extends Controller
         try {
             $payment = new Payment();
             $payment->reserve = $request->get('extra2');
-            if ($request->has('extra3')) {
+            if ($request->get('extra3') != null) {
                 $promocode = Promocodes::check($request->get('extra3'));
                 if ($promocode instanceof Promocodes) {
                     User::redeemCode($promocode->code, $callback = null);
