@@ -212,4 +212,15 @@ class ReserveController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function findScheduleByCustomer($id)
+    {
+        try {
+            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('user', $id)->where('status', 6)->get();
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }

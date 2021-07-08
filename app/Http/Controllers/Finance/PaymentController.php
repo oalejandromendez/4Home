@@ -27,6 +27,7 @@ class PaymentController extends Controller
                 }
             }
             $payment->name = $request->get('nickname_buyer');
+            $payment->reference = $request->get('extra1');
             $payment->email = $request->get('email_buyer');
             $payment->phone = $request->get('phone');
             $payment->reference_sale = $request->get('reference_sale');

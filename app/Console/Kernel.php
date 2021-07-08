@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\InactiveReservationCommand',
-        'App\Console\Commands\ServicesProfessionalsCommand'
+        'App\Console\Commands\ServicesProfessionalsCommand',
+        'App\Console\Commands\ChangeReservationStatusCommand'
     ];
 
     /**
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('4home:inactive')->everyMinute();
         $schedule->command('4home:schedule')->daily();
+        $schedule->command('4home:status')->daily();
     }
 
     /**

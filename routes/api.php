@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     /*Reservas*/
     Route::get('reserve/filter/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findByCustomer');
     Route::get('reserve/filter/reference/{reference}', 'App\Http\Controllers\Scheduling\ReserveController@findByReference');
+    Route::get('reserve/filter/schedule/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findScheduleByCustomer');
     Route::resource('reserve', 'App\Http\Controllers\Scheduling\ReserveController', ['except' => ['create', 'edit']]);
 
     /*Agendamientos*/
