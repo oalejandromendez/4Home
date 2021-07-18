@@ -102,6 +102,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('reserve/filter/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findByCustomer');
     Route::get('reserve/filter/reference/{reference}', 'App\Http\Controllers\Scheduling\ReserveController@findByReference');
     Route::get('reserve/filter/schedule/customer/{id}', 'App\Http\Controllers\Scheduling\ReserveController@findScheduleByCustomer');
+    Route::get('reserve/filter/status/{id}', 'App\Http\Controllers\Scheduling\ReserveController@filterByStatus');
     Route::resource('reserve', 'App\Http\Controllers\Scheduling\ReserveController', ['except' => ['create', 'edit']]);
 
     /*Agendamientos*/
@@ -114,4 +115,17 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('promocodes/disable', 'App\Http\Controllers\Finance\PromocodesController@disable');
     Route::patch('promocodes/check', 'App\Http\Controllers\Finance\PromocodesController@check');
     Route::resource('promocodes', 'App\Http\Controllers\Finance\PromocodesController', ['except' => ['create', 'edit']]);
+
+    /*Reprogramaciones*/
+    Route::resource('reschedule', 'App\Http\Controllers\Scheduling\RescheduleController', ['except' => ['create', 'edit']]);
+
+    /*Historial de pagos*/
+    Route::post('payment/filter/user', 'App\Http\Controllers\Finance\PaymentController@byCustomer');
+
+    /*Reportes*/
+    Route::post('report/schedule', 'App\Http\Controllers\Scheduling\ReserveController@reportSchedule');
+    Route::get('report/expiration', 'App\Http\Controllers\Scheduling\ReserveController@reportExpiration');
+    Route::post('report/history', 'App\Http\Controllers\Scheduling\ReserveController@reportHistory');
+    Route::get('report/pending', 'App\Http\Controllers\Scheduling\ReserveController@reportPendingPayments');
+    Route::post('report/professional', 'App\Http\Controllers\Scheduling\ReserveController@reportProfessional');
 });

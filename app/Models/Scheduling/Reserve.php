@@ -4,6 +4,7 @@ namespace App\Models\Scheduling;
 
 use App\Models\Admin\Professional;
 use App\Models\Admin\Service;
+use App\Models\Finance\Payment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -68,6 +69,11 @@ class Reserve extends Model
         return $this->hasOne(Professional::class, 'id', 'supervisor');
     }
 
+    public function payment()
+    {
+        return $this->hasMany(Payment::class, 'reserve', 'id');
+    }
+
     /**
      * Obtiene las reservas del dia siguiente al actual para enviar por correo a los profesionales
      *
@@ -86,7 +92,7 @@ class Reserve extends Model
         $query->leftJoin('customer_address', 'customer_address.id', '=', 'reserve.customer_address');
         $query->leftJoin('professional', 'professional.id', '=', 'reserve.professional');
         $query->leftJoin('status', 'professional.status', '=', 'status.id');
-        $query->where('reserve.status', 6);
+        $query->where('reserve.status', 4);
         $query->where('status.openSchedule', 1);
         $query->whereRaw("(date = '".$date."' OR (date IS NULL AND day = ".$day."))");
         return $query->get();

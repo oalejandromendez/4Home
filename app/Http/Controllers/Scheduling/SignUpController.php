@@ -9,7 +9,6 @@ use App\Mail\PasswordResetEmail;
 use App\Models\Scheduling\CustomerAddress;
 use App\Models\Scheduling\CustomerType;
 use App\Models\User;
-use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -106,10 +105,10 @@ class SignUpController extends Controller
                 DB::beginTransaction();
                 $fullname = $user->name . ' ' . $user->lastname;
                 $password = $this->randomPassword();
-                $user->password = Hash::make($password);
+                $user->password = Hash::make('0'.$password);
                 $user->reset_password = 1;
                 $user->update();
-                Mail::to($request->get('email'))->send(new PasswordResetEmail($fullname, $password));
+                Mail::to($request->get('email'))->send(new PasswordResetEmail($fullname, '0'.$password));
                 DB::commit();
                 return response()->json(200);
             } else {

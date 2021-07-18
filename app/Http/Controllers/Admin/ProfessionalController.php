@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfessionalRequest;
 use App\Http\Resources\Admin\ProfessionalResource;
 use App\Models\Admin\Professional;
-use App\Models\Scheduling\Reserve;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

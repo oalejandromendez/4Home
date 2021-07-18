@@ -33,4 +33,10 @@ class ReserveDay extends Model
 
 
     protected $guarded = [];
+
+
+    public function reserve()
+    {
+        return $this->hasOne(Reserve::class, 'id', 'reserve');
+    }
 }

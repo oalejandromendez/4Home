@@ -45,14 +45,14 @@ class ChangeReservationStatusCommand extends Command
 
             DB::beginTransaction();
 
-            $reserves = Reserve::with('reserve_day')->where('status', 6 )->get();
+            $reserves = Reserve::with('reserve_day')->where('status', 4 )->get();
 
             foreach($reserves as $reserve) {
                 if($reserve->type == 2) {
                     $dateValidation = (new Carbon($reserve->scheduling_date))->addMonth();
                     if($dateValidation < Carbon::now()) {
                         $update = Reserve::find($reserve->id);
-                        $update->status = 9;
+                        $update->status = 10;
                         $update->update();
                     }
                 }
@@ -66,7 +66,7 @@ class ChangeReservationStatusCommand extends Command
                     }
                     if($flag) {
                         $update = Reserve::find($reserve->id);
-                        $update->status = 9;
+                        $update->status = 10;
                         $update->update();
                     }
                 }

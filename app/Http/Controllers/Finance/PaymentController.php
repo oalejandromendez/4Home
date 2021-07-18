@@ -10,6 +10,7 @@ use Gabievi\Promocodes\Promocodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaymentController extends Controller
 {
@@ -54,6 +55,27 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::error(sprintf('%s:%s', 'PaymentController:confirmation', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function byCustomer(Request $request)
+    {
+        try {
+
+            if(!is_null($request->get('user'))) {
+                $payments = Payment::whereHas('reserve.user', function (Builder $query) use($request) {
+                    $query->where('id', $request->get('user'));
+                })->whereBetween('payment.created_at', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->get();
+            } else {
+                $payments = Payment::whereBetween('payment.created_at', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->get();
+            }
+
+            return response()->json($payments, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'PaymentController:byCustomer', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }

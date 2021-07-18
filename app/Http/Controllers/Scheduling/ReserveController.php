@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReserveController extends Controller
 {
@@ -32,9 +33,7 @@ class ReserveController extends Controller
     public function index()
     {
         try {
-            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')
-            ->where('status', 1)
-            ->get();
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:index', $e->getMessage()));
@@ -204,7 +203,7 @@ class ReserveController extends Controller
     public function findByReference($reference)
     {
         try {
-            $reservation = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('reference', $reference)->first();
+            $reservation = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('reference', $reference)->first();
 
             return response()->json($reservation, 200);
         } catch (\Exception $e) {
@@ -216,10 +215,120 @@ class ReserveController extends Controller
     public function findScheduleByCustomer($id)
     {
         try {
-            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor')->where('user', $id)->where('status', 6)->get();
+            $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor', 'payment')
+            ->where('user', $id)
+            ->where('status', 4)
+            ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function filterByStatus($status)
+    {
+        try {
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')
+            ->where('status', $status)
+            ->get();
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:filterByStatus', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportSchedule(Request $request)
+    {
+        try {
+
+            $sporadic = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')->whereHas('reserve', function (Builder $query) {
+                $query->where('status', 4)->where('type', 1);
+            })->whereBetween('date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+            ->get();
+
+            $init = (new Carbon($request->get('init')." 00:00:00"))->subMonth();
+            $monthly = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')->whereHas('reserve', function (Builder $query) use($request, $init) {
+                $query->where('status', 4)
+                ->where('type', 2)
+                ->whereBetween('scheduling_date', [ $init->toDateString()." 00:00:00", $request->get('end')." 23:59:59" ]);
+            })->get();
+
+            $schedule = [
+                'sporadic' => $sporadic,
+                'monthly' => $monthly
+            ];
+
+            return response()->json($schedule, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:reportSchedule', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportExpiration()
+    {
+        try {
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
+            ->where('status', 3)
+            ->get();
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:reportExpiration', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportHistory(Request $request)
+    {
+        try {
+            if(is_null($request->get('user'))) {
+                $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
+                ->where('status', 10)
+                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->get();
+            } else {
+                $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
+                ->whereHas('user', function (Builder $query) use($request) {
+                    $query->where('id', $request->get('user'));
+                })
+                ->where('status', 10)
+                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->get();
+            }
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:reportHistory', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportPendingPayments()
+    {
+        try {
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
+                ->where('status', 2)
+                ->get();
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:reportPendingPayments', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reportProfessional(Request $request)
+    {
+        try {
+            $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
+                ->whereHas('professional', function (Builder $query) use($request) {
+                    $query->where('id', $request->get('professional'));
+                })
+                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->get();
+            return response()->json($reservations, 200);
+        } catch (\Exception $e) {
+            Log::error(sprintf('%s:%s', 'ReserveController:reportProfessional', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Finance;
 
+use App\Models\Scheduling\Reserve;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,4 +33,10 @@ class Payment extends Model
 
 
     protected $guarded = [];
+
+
+    public function reserve()
+    {
+        return $this->hasOne(Reserve::class, 'id', 'reserve');
+    }
 }
