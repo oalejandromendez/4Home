@@ -4,10 +4,11 @@ namespace App\Models\Scheduling;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class CustomerAddress extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -35,5 +36,7 @@ class CustomerAddress extends Model
         'user',
         'address'
     ];
+
+    protected static $logAttributes = ['*'];
 
 }

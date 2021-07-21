@@ -4,10 +4,11 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Position extends Model
 {
-    use HasFactory;
+    use LogsActivity, HasFactory;
 
     /**
      * Tabla asociada con el modelo.
@@ -32,4 +33,8 @@ class Position extends Model
 
 
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
+
 }

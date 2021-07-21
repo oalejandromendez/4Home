@@ -4,10 +4,11 @@ namespace App\Models\Common;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class DocumentType extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
      /**
      * Tabla asociada con el modelo.
@@ -33,4 +34,7 @@ class DocumentType extends Model
         'created_at',
         'updated_at'
     ];
+
+    protected static $logAttributes = ['*'];
+
 }

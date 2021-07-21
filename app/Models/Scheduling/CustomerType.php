@@ -2,12 +2,14 @@
 
 namespace App\Models\Scheduling;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class CustomerType extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -32,4 +34,14 @@ class CustomerType extends Model
 
 
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
+
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'customer_type', 'id');
+    }
+
 }

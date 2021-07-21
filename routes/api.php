@@ -128,4 +128,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('report/history', 'App\Http\Controllers\Scheduling\ReserveController@reportHistory');
     Route::get('report/pending', 'App\Http\Controllers\Scheduling\ReserveController@reportPendingPayments');
     Route::post('report/professional', 'App\Http\Controllers\Scheduling\ReserveController@reportProfessional');
+
+    /*Registro de Actividades*/
+    Route::post('activitylog', 'App\Http\Controllers\Admin\ActivityLogController@index');
+
+    /*Dashboard*/
+    Route::get('dashboard/admin', 'App\Http\Controllers\Dashboard\DashboardAdminController@index');
 });

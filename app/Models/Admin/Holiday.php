@@ -4,10 +4,11 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Holiday extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -32,4 +33,6 @@ class Holiday extends Model
 
 
     protected $guarded = [];
+
+    protected static $logAttributes = ['*'];
 }

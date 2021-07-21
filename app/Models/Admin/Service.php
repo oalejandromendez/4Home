@@ -2,12 +2,14 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Scheduling\Reserve;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
      /**
      * Tabla asociada con el modelo.
@@ -34,8 +36,16 @@ class Service extends Model
     protected $guarded = [];
 
 
+    protected static $logAttributes = ['*'];
+
+
     public function working_day()
     {
         return $this->hasOne(WorkingDay::class, 'id', 'working_day');
+    }
+
+    public function reserve()
+    {
+        return $this->hasMany(Reserve::class, 'service', 'id');
     }
 }

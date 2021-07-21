@@ -9,10 +9,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Reserve extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -37,6 +38,9 @@ class Reserve extends Model
 
 
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
 
 
     public function user()

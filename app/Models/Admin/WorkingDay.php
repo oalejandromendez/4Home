@@ -4,10 +4,11 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class WorkingDay extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -34,8 +35,16 @@ class WorkingDay extends Model
     protected $guarded = [];
 
 
+    protected static $logAttributes = ['*'];
+
+
     public function service_type()
     {
         return $this->hasOne(ServiceType::class, 'id', 'service_type');
+    }
+
+    public function service()
+    {
+        return $this->hasMany(Service::class, 'working_day', 'id');
     }
 }

@@ -4,10 +4,11 @@ namespace App\Models\Scheduling;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class ReserveDay extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
 
     /**
@@ -33,6 +34,9 @@ class ReserveDay extends Model
 
 
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
 
 
     public function reserve()

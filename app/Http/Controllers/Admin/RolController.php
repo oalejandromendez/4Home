@@ -53,6 +53,7 @@ class RolController extends Controller
             $rol = Role::create($request->except('permissions'));
             $permissions = $request->input('permissions') ? $request->input('permissions') : [];
             $rol->givePermissionTo($permissions);
+
             DB::commit();
             return response()->json(200);
         } catch (\Exception $e) {

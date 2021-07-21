@@ -5,10 +5,11 @@ namespace App\Models\Finance;
 use App\Models\Scheduling\Reserve;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * Tabla asociada con el modelo.
@@ -33,6 +34,9 @@ class Payment extends Model
 
 
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
 
 
     public function reserve()

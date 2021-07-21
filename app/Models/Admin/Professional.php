@@ -4,9 +4,12 @@ namespace App\Models\Admin;
 
 use App\Models\Scheduling\Reserve;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Professional extends Model
 {
+    use LogsActivity;
+
     /**
      * Tabla asociada con el modelo.
      *
@@ -34,6 +37,10 @@ class Professional extends Model
      * @var array
      */
     protected $guarded = [];
+
+
+    protected static $logAttributes = ['*'];
+
 
     public function position()
     {
