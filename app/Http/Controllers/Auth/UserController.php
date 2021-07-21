@@ -18,7 +18,6 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_USUARIOS');
         $this->middleware('permission:VER_USUARIOS', ['only' => ['index']]);
         $this->middleware('permission:CREAR_USUARIOS', ['only' => ['store', 'validateEmail']]);
         $this->middleware('permission:MODIFICAR_USUARIOS', ['only' => ['update', 'validateEmail']]);

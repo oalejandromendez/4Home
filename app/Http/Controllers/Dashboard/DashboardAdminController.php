@@ -31,7 +31,7 @@ class DashboardAdminController extends Controller
             $reschedule = Reserve::where('status', 9)->get();
             $reschedule = $reschedule->count();
 
-            $services = Reserve::where('status', 10)->get();
+            $services = Reserve::where('status', 4)->get();
             $services = $services->count();
 
             $customers = User::with('customer_address')->whereHas('roles', function (Builder $query) {
