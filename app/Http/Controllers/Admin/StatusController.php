@@ -110,6 +110,12 @@ class StatusController extends Controller
             return response()->json(['message' => 'El estado no se encuentra en la base de datos'], 404);
         }
 
+        $professional = $status->professional;
+
+        if(count($professional)) {
+            return response()->json(['message' => 'El estado tiene profesionales asociados'], 500);
+        }
+
         DB::beginTransaction();
         try {
             $status->delete();

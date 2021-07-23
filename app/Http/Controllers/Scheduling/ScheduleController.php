@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Scheduling;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Scheduling\ScheduleRequest;
 use App\Mail\CustomerServiceSchedulingEmail;
+use App\Models\Admin\Professional;
 use App\Models\Admin\Service;
+use App\Models\Scheduling\CustomerAddress;
 use App\Models\Scheduling\Reserve;
 use App\Models\Scheduling\ReserveDay;
 use App\Models\User;
@@ -90,16 +92,8 @@ class ScheduleController extends Controller
                     $newDay->save();
                 }
             }
-
-            $user = User::find($reserve->user);
-            $service = Service::find($reserve->service);
-            if(isset($user->email)) {
-                $fullname = $user->name . " " . $user->lastname;
-            $reference = $reserve->reference;
-                $value = $service->price * $service->quantity;
-                Mail::to($user->email)->send(new CustomerServiceSchedulingEmail($fullname, $reference, $value));
-            }
             DB::commit();
+            $this->sendEmail($reserve);
             return response()->json(200);
         } catch (\Exception $e) {
             DB::rollback();
@@ -107,4 +101,22 @@ class ScheduleController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+    public function sendEmail($reserve)
+    {
+        $user = User::find($reserve->user);
+        $service = Service::find($reserve->service);
+        $profesional = Professional::find($reserve->professional);
+        $address = CustomerAddress::find($reserve->customer_address);
+
+        if(isset($user->email)) {
+            $fullname = $user->name . " " . $user->lastname;
+            $reference = $reserve->reference;
+            $value = $service->price * $service->quantity;
+            $profesionaName = $profesional->name . " " . $profesional->lastname;
+            $profesionaId = $profesional->identification;
+            $addresses = $address->address;
+
+            Mail::to($user->email)->send(new CustomerServiceSchedulingEmail($fullname, $reference, $value, $profesionaName, $profesionaId, $addresses));
+        }
+}
 }

@@ -57,5 +57,9 @@ class Professional extends Model
         return $this->hasOne(Status::class, 'id', 'status');
     }
 
+    public function supervisor()
+    {
+        return $this->hasMany(Reserve::class, 'supervisor', 'id');
+    }
 
 }

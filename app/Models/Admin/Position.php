@@ -37,4 +37,10 @@ class Position extends Model
 
     protected static $logAttributes = ['*'];
 
+
+    public function professional()
+    {
+        return $this->hasMany(Professional::class, 'position', 'id');
+    }
+
 }

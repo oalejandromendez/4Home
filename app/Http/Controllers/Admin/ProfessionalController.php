@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfessionalRequest;
 use App\Http\Resources\Admin\ProfessionalResource;
 use App\Models\Admin\Professional;
+use App\Models\Admin\Status;
+use App\Models\Scheduling\Reserve;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +105,16 @@ class ProfessionalController extends Controller
             return response()->json(['message' => 'El profesional no se encuentra en la base de datos'], 404);
         }
 
+        $status = Status::find($request->get('status'));
+
+        if($status->openSchedule == 0) {
+            $reserves = Reserve::where('professional', $id)->where('status', '<>', 10)->get();
+
+            if(count($reserves)) {
+                return response()->json(['message' => 'No se puede modificar el estado del usuario porque tiene reservas abiertas'], 505);
+            }
+        }
+
         try {
             DB::beginTransaction();
             $professional->fill($request->all());
@@ -132,6 +144,18 @@ class ProfessionalController extends Controller
 
         if (!$professional instanceof Professional) {
             return response()->json(['message' => 'El profesional no se encuentra en la base de datos'], 404);
+        }
+
+        $reserve = $professional->reserve;
+
+        if(count($reserve)) {
+            return response()->json(['message' => 'El profesional tiene reservas asociadas'], 500);
+        }
+
+        $supervisor = $professional->supervisor;
+
+        if(count($supervisor)) {
+            return response()->json(['message' => 'El profesional es supervisor de una o mas reservas'], 500);
         }
 
         DB::beginTransaction();

@@ -15,7 +15,6 @@ class CustomerTypeController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_TIPO_CLIENTE');
         $this->middleware('permission:VER_TIPO_CLIENTE', ['only' => ['index']]);
         $this->middleware('permission:CREAR_TIPO_CLIENTE', ['only' => ['store']]);
         $this->middleware('permission:MODIFICAR_TIPO_CLIENTE', ['only' => ['update']]);
@@ -108,6 +107,12 @@ class CustomerTypeController extends Controller
 
         if (!$customerType instanceof CustomerType) {
             return response()->json(['message' => 'El tipo de cliente no se encuentra en la base de datos'], 404);
+        }
+
+        $user = $customerType->user;
+
+        if(count($user)) {
+            return response()->json(['message' => 'El tipo de cliente tiene clientes asociados'], 500);
         }
 
         DB::beginTransaction();

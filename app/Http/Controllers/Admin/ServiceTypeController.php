@@ -16,7 +16,6 @@ class ServiceTypeController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_TIPO_SERVICIO');
         $this->middleware('permission:VER_TIPO_SERVICIO', ['only' => ['index']]);
         $this->middleware('permission:CREAR_TIPO_SERVICIO', ['only' => ['store']]);
         $this->middleware('permission:MODIFICAR_TIPO_SERVICIO', ['only' => ['update']]);
@@ -109,6 +108,12 @@ class ServiceTypeController extends Controller
 
         if (!$serviceType instanceof ServiceType) {
             return response()->json(['message' => 'El tio de servicio no se encuentra en la base de datos'], 404);
+        }
+
+        $working = $serviceType->working_day;
+
+        if(count($working)) {
+            return response()->json(['message' => 'El tipo de servicio tiene jornadas asociadas'], 500);
         }
 
         DB::beginTransaction();

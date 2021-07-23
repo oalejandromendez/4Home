@@ -116,5 +116,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'REPORTE_HISTORIAL_PAGOS', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_SERVICIO', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_REGISTRO_ACTIVIDADES', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_HISTORIAL_CLIENTE', 'guard_name' => 'api']);
     }
 }

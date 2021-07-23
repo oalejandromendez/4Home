@@ -39,4 +39,9 @@ class Status extends Model
     protected $guarded = [];
 
     protected static $logAttributes = ['*'];
+
+    public function professional()
+    {
+        return $this->hasMany(Professional::class, 'status', 'id');
+    }
 }

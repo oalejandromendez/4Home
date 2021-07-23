@@ -112,6 +112,12 @@ class WorkingDayController extends Controller
             return response()->json(['message' => 'La jornada no se encuentra en la base de datos'], 404);
         }
 
+        $services = $workingDay->service;
+
+        if(count($services)) {
+            return response()->json(['message' => 'La jornada tiene servicios asociados'], 500);
+        }
+
         DB::beginTransaction();
         try {
             $workingDay->delete();

@@ -110,6 +110,12 @@ class PositionController extends Controller
             return response()->json(['message' => 'El cargo no se encuentra en la base de datos'], 404);
         }
 
+        $professional = $position->professional;
+
+        if(count($professional)) {
+            return response()->json(['message' => 'El cargo tiene profesionales asociados'], 500);
+        }
+
         DB::beginTransaction();
         try {
             $position->delete();

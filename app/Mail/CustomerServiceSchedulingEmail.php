@@ -19,17 +19,24 @@ class CustomerServiceSchedulingEmail extends Mailable
     public $fullname;
     public $reference;
     public $value;
+    public $profesionaName;
+    public $profesionaId;
+    public $address;
+
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($fullname, $reference, $value)
+    public function __construct($fullname, $reference, $value, $profesionaName, $profesionaId, $address)
     {
         $this->fullname = $fullname;
         $this->reference = $reference;
         $this->value = $value;
+        $this->profesionaName = $profesionaName;
+        $this->profesionaId = $profesionaId;
+        $this->address = $address;
     }
 
     /**

@@ -99,7 +99,15 @@ class RolController extends Controller
         if (!is_numeric($id)) {
             return response()->json(['message' => 'El id del rol debe ser un campo numerico'], 400);
         }
+
         $rol = Role::findOrFail($id);
+
+        $users = $rol->users;
+
+        if(count($users)) {
+            return response()->json(['message' => 'El rol tiene usuarios asociados'], 500);
+        }
+
         DB::beginTransaction();
         try {
             $rol->delete();

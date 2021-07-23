@@ -53,6 +53,10 @@
 
         <p class="mt-25">Hemos agendado tu servicio con referencia #<strong>{{ $reference }}</strong> con un valor de ${{ $value }}.</p>
 
+        <p class="mt-25">Nombre del profesional asignado: <strong>{{ $profesionaName }}</strong></p>
+        <p class="mt-25">Identificación del profesional asignado: <strong>{{ $profesionaId }}</strong></p>
+        <p class="mt-25">Dirección a prestar el servicio: <strong>{{ $address }}</strong></p>
+
         <p class="mt-25">Recuerda que cuentas con 24 horas para realizar el pago. Para hacerlo, unicamente debes ingresar a nuestra plataforma en la sección de Pre-Agendar.</p>
 
         <p class="mt-25 mb-25">Gracias por preferirnos y utilizar nuestros servicios.</p>

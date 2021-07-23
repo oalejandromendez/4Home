@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Scheduling\CustomerAddress;
+use App\Models\Scheduling\Reserve;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function customer_address()
     {
         return $this->hasMany(CustomerAddress::class, 'user', 'id');
+    }
+
+    public function reserve()
+    {
+        return $this->hasMany(Reserve::class, 'user', 'id');
     }
 }

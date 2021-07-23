@@ -15,7 +15,6 @@ class ServiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_SERVICIOS');
         $this->middleware('permission:VER_SERVICIOS', ['only' => ['index']]);
         $this->middleware('permission:CREAR_SERVICIOS', ['only' => ['store']]);
         $this->middleware('permission:MODIFICAR_SERVICIOS', ['only' => ['update']]);
@@ -108,6 +107,12 @@ class ServiceController extends Controller
 
         if (!$service instanceof Service) {
             return response()->json(['message' => 'El servicio no se encuentra en la base de datos'], 404);
+        }
+
+        $reserve = $service->reserve;
+
+        if(count($reserve)) {
+            return response()->json(['message' => 'El servicio tiene reservas asociadas'], 500);
         }
 
         DB::beginTransaction();

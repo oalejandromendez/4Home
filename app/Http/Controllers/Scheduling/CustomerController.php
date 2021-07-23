@@ -19,7 +19,6 @@ class CustomerController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_CLIENTES');
         $this->middleware('permission:VER_CLIENTES', ['only' => ['index']]);
         $this->middleware('permission:CREAR_CLIENTES', ['only' => ['store','validateIdentification', 'validateEmail']]);
         $this->middleware('permission:MODIFICAR_CLIENTES', ['only' => ['update' ,'validateIdentification', 'validateEmail']]);
@@ -147,6 +146,13 @@ class CustomerController extends Controller
         if (!$user instanceof User) {
             return response()->json(['message' => 'El cliente no se encuentra en la base de datos'], 404);
         }
+
+        $reserve = $user->reserve;
+
+        if(count($reserve)) {
+            return response()->json(['message' => 'El cliente tiene reservas asociadas'], 500);
+        }
+
         DB::beginTransaction();
         try {
             $user->delete();
