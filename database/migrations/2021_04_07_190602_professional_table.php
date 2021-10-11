@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ProfessionalTable extends Migration
@@ -25,13 +26,14 @@ class ProfessionalTable extends Migration
             $table->string('phone_contact');
             $table->string('salary');
             $table->string('email')->unique();
-            $table->binary('photo');
             $table->date('admission_date');
             $table->date('retirement_date')->nullable();
             $table->unsignedInteger('position');
             $table->unsignedInteger('status');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE professional ADD photo LONGBLOB");
     }
 
     /**
