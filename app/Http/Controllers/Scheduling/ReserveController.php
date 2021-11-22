@@ -44,7 +44,7 @@ class ReserveController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(ReserveRequest $request)
@@ -61,16 +61,16 @@ class ReserveController extends Controller
             $reserve->service = $request->get('service');
             $reserve->type = $request->get('type');
             $reserve->status = 1;
-            $reserve->reference = Carbon::now()->timestamp.$reserve->id;
+            $reserve->reference = Carbon::now()->timestamp . $reserve->id;
             $reserve->save();
 
-            foreach($request->get('days') as $day) {
+            foreach ($request->get('days') as $day) {
 
-                if($reserve->type == 1) {
+                if ($reserve->type == 1) {
                     $newDay = new ReserveDay();
                     $newDay->date = $day['date'];
                     $day = (new Carbon($day['date']))->dayOfWeek;
-                    if($day == 0) {
+                    if ($day == 0) {
                         $day = 6;
                     } else {
                         $day--;
@@ -80,7 +80,7 @@ class ReserveController extends Controller
                     $newDay->save();
                 }
 
-                if($reserve->type == 2) {
+                if ($reserve->type == 2) {
                     $newDay = new ReserveDay();
                     $newDay->day = $day['day'];
                     $newDay->reserve = $reserve->id;
@@ -100,15 +100,15 @@ class ReserveController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(ReserveRequest $request, $id)
     {
         $validated = $request->validated();
 
-        $reserve =  Reserve::with('reserve_day')->find($id);
+        $reserve = Reserve::with('reserve_day')->find($id);
 
         if (!$reserve instanceof Reserve) {
             return response()->json(['message' => 'La reserva no se encuentra en la base de datos'], 404);
@@ -126,13 +126,13 @@ class ReserveController extends Controller
 
             $reserve->update();
 
-            foreach($request->get('days') as $day) {
+            foreach ($request->get('days') as $day) {
 
-                if($reserve->type == 1) {
+                if ($reserve->type == 1) {
                     $newDay = new ReserveDay();
                     $newDay->date = $day['date'];
                     $day = (new Carbon($day['date']))->dayOfWeek;
-                    if($day == 0) {
+                    if ($day == 0) {
                         $day = 6;
                     } else {
                         $day--;
@@ -142,7 +142,7 @@ class ReserveController extends Controller
                     $newDay->save();
                 }
 
-                if($reserve->type == 2) {
+                if ($reserve->type == 2) {
                     $newDay = new ReserveDay();
                     $newDay->day = $day['day'];
                     $newDay->reserve = $reserve->id;
@@ -162,7 +162,7 @@ class ReserveController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -171,7 +171,7 @@ class ReserveController extends Controller
             return response()->json(['message' => 'El id de la reserva debe ser un campo numerico'], 400);
         }
 
-        $reserve =  Reserve::find($id);
+        $reserve = Reserve::find($id);
 
         if (!$reserve instanceof Reserve) {
             return response()->json(['message' => 'La reserva no se encuentra en la base de datos'], 404);
@@ -181,7 +181,7 @@ class ReserveController extends Controller
         try {
             $reserve->delete();
             DB::commit();
-            return response()->json( 200);
+            return response()->json(200);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error(sprintf('%s:%s', 'ReserveController:destroy', $e->getMessage()));
@@ -216,9 +216,9 @@ class ReserveController extends Controller
     {
         try {
             $reservations = Reserve::with('user', 'customer_address', 'service.working_day', 'reserve_day', 'professional', 'supervisor', 'payment')
-            ->where('user', $id)
-            ->where('status', 4)
-            ->get();
+                ->where('user', $id)
+                ->where('status', 4)
+                ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:findByCustomer', $e->getMessage()));
@@ -230,8 +230,8 @@ class ReserveController extends Controller
     {
         try {
             $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')
-            ->where('status', $status)
-            ->get();
+                ->where('status', $status)
+                ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:filterByStatus', $e->getMessage()));
@@ -243,17 +243,41 @@ class ReserveController extends Controller
     {
         try {
 
-            $sporadic = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')->whereHas('reserve', function (Builder $query) {
-                $query->where('status', 4)->where('type', 1);
-            })->whereBetween('date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
-            ->get();
+            $idCustomers = [];
+            if (!empty($request->get('customers'))) {
+                $idCustomers = array_column($request->get('customers'), 'id');
+            }
 
-            $init = (new Carbon($request->get('init')." 00:00:00"))->subMonth();
-            $monthly = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')->whereHas('reserve', function (Builder $query) use($request, $init) {
-                $query->where('status', 4)
-                ->where('type', 2)
-                ->whereBetween('scheduling_date', [ $init->toDateString()." 00:00:00", $request->get('end')." 23:59:59" ]);
-            })->get();
+            $sporadic = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')
+                ->whereHas('reserve', function (Builder $query) use ($request) {
+                    $query->where('status', '!=', 1)
+                        ->where('type', 1);
+                })->whereBetween('date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"]);
+
+            if (count($idCustomers) > 0) {
+                $sporadic = $sporadic->whereHas('reserve', function (Builder $query) use ($idCustomers, $request) {
+                    $query->whereIn('reserve.user', $idCustomers);
+                });
+            }
+
+            $sporadic = $sporadic->get();
+
+            $init = (new Carbon($request->get('init') . " 00:00:00"))->subMonth();
+            $monthly = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve')
+                ->whereHas('reserve', function (Builder $query) use ($request, $init) {
+                    $query->where('status', '!=', 1)
+                        ->where('type', 2)
+                        ->whereBetween('scheduling_date', [$init->toDateString() . " 00:00:00", $request->get('end') . " 23:59:59"]);
+                });
+
+            if (count($idCustomers) > 0) {
+                $monthly = $monthly->whereHas('reserve', function (Builder $query) use ($idCustomers, $request) {
+                    $query->whereIn('reserve.user', $idCustomers);
+                });
+            }
+
+
+            $monthly = $monthly->get();
 
             $schedule = [
                 'sporadic' => $sporadic,
@@ -271,8 +295,8 @@ class ReserveController extends Controller
     {
         try {
             $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
-            ->where('status', 3)
-            ->get();
+                ->where('status', 3)
+                ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ReserveController:reportExpiration', $e->getMessage()));
@@ -283,19 +307,19 @@ class ReserveController extends Controller
     public function reportHistory(Request $request)
     {
         try {
-            if(is_null($request->get('user'))) {
+            if (is_null($request->get('user'))) {
                 $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
-                ->where('status', 10)
-                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
-                ->get();
+                    ->where('status', 10)
+                    ->whereBetween('scheduling_date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"])
+                    ->get();
             } else {
                 $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
-                ->whereHas('user', function (Builder $query) use($request) {
-                    $query->where('id', $request->get('user'));
-                })
-                ->where('status', 10)
-                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
-                ->get();
+                    ->whereHas('user', function (Builder $query) use ($request) {
+                        $query->where('id', $request->get('user'));
+                    })
+                    ->where('status', 10)
+                    ->whereBetween('scheduling_date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"])
+                    ->get();
             }
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
@@ -321,10 +345,10 @@ class ReserveController extends Controller
     {
         try {
             $reservations = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional')
-                ->whereHas('professional', function (Builder $query) use($request) {
+                ->whereHas('professional', function (Builder $query) use ($request) {
                     $query->where('id', $request->get('professional'));
                 })
-                ->whereBetween('scheduling_date', [ $request->get('init')." 00:00:00", $request->get('end')." 23:59:59" ])
+                ->whereBetween('scheduling_date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"])
                 ->get();
             return response()->json($reservations, 200);
         } catch (\Exception $e) {
