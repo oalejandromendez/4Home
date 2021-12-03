@@ -62,4 +62,9 @@ class Professional extends Model
         return $this->hasMany(Reserve::class, 'supervisor', 'id');
     }
 
+    public function novelties()
+    {
+        return $this->hasMany(Novelty::class, 'professional', 'id');
+    }
+
 }

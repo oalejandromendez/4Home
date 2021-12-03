@@ -135,4 +135,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     /*Dashboard*/
     Route::get('dashboard/admin', 'App\Http\Controllers\Dashboard\DashboardAdminController@index');
     Route::get('dashboard/customer/{id}', 'App\Http\Controllers\Dashboard\DashboardCustomerController@index');
+
+    /*Novedades de servicio*/
+    Route::resource('novelty', 'App\Http\Controllers\Admin\NoveltiesController', ['except' => ['create', 'edit']]);
 });

@@ -109,6 +109,8 @@ class PermissionSeeder extends Seeder
 
         Permission::create(['name' => 'ACCEDER_REPORTES', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_AGENDA', 'guard_name' => 'api']);
+        Permission::create(['name' => 'REPORTE_AGENDA_CLIENTES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'REPORTE_AGENDA_PROFESIONALES', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_PAGOS_VENCIDOS', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_HISTORIAL', 'guard_name' => 'api']);
         Permission::create(['name' => 'REPORTE_PAGOS_PENDIENTES', 'guard_name' => 'api']);
@@ -118,5 +120,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'REPORTE_REGISTRO_ACTIVIDADES', 'guard_name' => 'api']);
 
         Permission::create(['name' => 'ACCEDER_HISTORIAL_CLIENTE', 'guard_name' => 'api']);
+
+        Permission::create(['name' => 'ACCEDER_NOVEDADES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'VER_NOVEDADES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'CREAR_NOVEDADES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'MODIFICAR_NOVEDADES', 'guard_name' => 'api']);
+        Permission::create(['name' => 'ELIMINAR_NOVEDADES', 'guard_name' => 'api']);
     }
 }
