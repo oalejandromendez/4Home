@@ -17,6 +17,7 @@ class NoveltiesTable extends Migration
             $table->id();
             $table->string('professional');
             $table->integer('type');
+            $table->integer('status');
             $table->date('initial_date')->nullable();
             $table->date('final_date')->nullable();
             $table->timestamps();
