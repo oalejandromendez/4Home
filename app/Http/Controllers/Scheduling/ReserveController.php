@@ -60,6 +60,9 @@ class ReserveController extends Controller
             $reserve->customer_address = $request->get('customer_address');
             $reserve->service = $request->get('service');
             $reserve->type = $request->get('type');
+            if ($reserve->type == 2) {
+                $reserve->initial_service_date = $request->get('initial_service_date');
+            }
             $reserve->status = 1;
             $reserve->reference = Carbon::now()->timestamp . $reserve->id;
             $reserve->save();

@@ -13,8 +13,8 @@ class ServiceTable extends Migration
      */
     public function up()
     {
-        Schema::table('service', function (Blueprint $table) {
-            $table->integer('is_novelty');
+        Schema::table('reserve', function (Blueprint $table) {
+            $table->date('initial_service_date')->nullable();;
         });
     }
 }

@@ -67,6 +67,7 @@ class ScheduleController extends Controller
                 $reserve->status = 4;
             }
             $reserve->scheduling_date = new Carbon();
+            $reserve->initial_service_date = $request->get('initial_service_date');
             $reserve->update();
 
             foreach($request->get('days') as $day) {
