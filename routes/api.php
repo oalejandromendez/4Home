@@ -137,5 +137,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('dashboard/customer/{id}', 'App\Http\Controllers\Dashboard\DashboardCustomerController@index');
 
     /*Novedades de servicio*/
+    Route::post('novelty/schedule', 'App\Http\Controllers\Admin\NoveltiesController@scheduleAffected');
     Route::resource('novelty', 'App\Http\Controllers\Admin\NoveltiesController', ['except' => ['create', 'edit']]);
 });
