@@ -35,7 +35,7 @@ class ProfessionalController extends Controller
     public function index()
     {
         try {
-            return new ProfessionalResource(Professional::with('position', 'reserve.reserve_day', 'reserve.service.working_day' ,'status')->get());
+            return new ProfessionalResource(Professional::with('position', 'reserve.reserve_day', 'reserve.service.working_day' ,'status', 'novelties')->get());
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'ProfessionalController:index', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);

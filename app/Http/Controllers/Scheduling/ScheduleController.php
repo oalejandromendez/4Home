@@ -45,7 +45,6 @@ class ScheduleController extends Controller
      */
     public function store(ScheduleRequest $request)
     {
-        $validated = $request->validated();
 
         $reserve =  Reserve::with('reserve_day')->find($request->get('id'));
 

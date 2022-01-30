@@ -138,5 +138,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     /*Novedades de servicio*/
     Route::post('novelty/schedule', 'App\Http\Controllers\Admin\NoveltiesController@scheduleAffected');
+    Route::post('novelty/reschedule', 'App\Http\Controllers\Admin\NoveltiesController@storeReschedule');
     Route::resource('novelty', 'App\Http\Controllers\Admin\NoveltiesController', ['except' => ['create', 'edit']]);
 });

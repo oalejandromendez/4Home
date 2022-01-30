@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NoveltyRequest;
+use App\Http\Requests\Scheduling\ReserveRequest;
+use App\Http\Requests\Scheduling\ScheduleRequest;
 use App\Models\Admin\Novelty;
 use App\Models\Scheduling\Reserve;
 use App\Models\Scheduling\ReserveDay;
@@ -184,6 +186,57 @@ class NoveltiesController extends Controller
             return response()->json($schedule, 200);
         } catch (\Exception $e) {
             Log::error(sprintf('%s:%s', 'NoveltiesController:scheduleAffected', $e->getMessage()));
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeReschedule(ReserveRequest $request)
+    {
+
+        try {
+
+            DB::beginTransaction();
+
+            $reserve = new Reserve();
+            $reserve->reference = Carbon::now()->timestamp . $reserve->id;
+            $reserve->user = $request->get('user');
+            $reserve->customer_address = $request->get('customer_address');
+            $reserve->service = $request->get('service');
+            $reserve->type = $request->get('type');
+            $reserve->status = 4;
+            $reserve->professional = $request->get('professional');
+            $reserve->supervisor = $request->get('supervisor');
+            $reserve->scheduling_date = new Carbon();
+
+            $reserve->save();
+
+            foreach ($request->get('days') as $day) {
+
+                if ($reserve->type == 1) {
+                    $newDay = new ReserveDay();
+                    $newDay->date = $day['date'];
+                    $day = (new Carbon($day['date']))->dayOfWeek;
+                    if ($day == 0) {
+                        $day = 6;
+                    } else {
+                        $day--;
+                    }
+                    $newDay->day = $day;
+                    $newDay->reserve = $reserve->id;
+                    $newDay->save();
+                }
+            }
+            DB::commit();
+            return response()->json(200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error(sprintf('%s:%s', 'NoveltiesController:storeReschedule', $e->getMessage()));
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }

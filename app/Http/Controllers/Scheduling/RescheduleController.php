@@ -21,7 +21,6 @@ class RescheduleController extends Controller
      */
     public function store(ReserveRequest $request)
     {
-        $validated = $request->validated();
 
         $reserve =  Reserve::with('reserve_day')->find($request->get('id'));
 

@@ -26,8 +26,6 @@ class NoveltyRequest extends FormRequest
         return [
             'professional' => 'required',
             'type' => 'required',
-            'initial_date' => 'required',
-            'final_date' => 'required',
         ];
     }
 
@@ -41,8 +39,6 @@ class NoveltyRequest extends FormRequest
         return [
             'professional.required' => 'El profesional es requerido.',
             'type.required' => 'El tipo es requerido.',
-            'initial_date.required' => 'La fecha inicial es requerida.',
-            'final_date.required' => 'La fecha final es requerida.',
         ];
     }
 }

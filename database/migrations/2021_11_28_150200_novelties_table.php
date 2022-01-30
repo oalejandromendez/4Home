@@ -20,6 +20,7 @@ class NoveltiesTable extends Migration
             $table->integer('status');
             $table->date('initial_date')->nullable();
             $table->date('final_date')->nullable();
+            $table->string('ids_reserves')->nullable();
             $table->timestamps();
         });
     }
