@@ -138,7 +138,7 @@ class NoveltiesController extends Controller
 
             $sporadic = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day')
                 ->whereHas('reserve_day', function (Builder $query) use ($request) {
-                    $query->whereBetween('date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"]);
+                    $query->whereBetween('date', [$request->get('init'), $request->get('end')]);
                 });
 
             $status = $request->get('status');
@@ -173,14 +173,11 @@ class NoveltiesController extends Controller
                         ->where('reserve.status', '!=', 9);
                 }
             }
-            DB::enableQueryLog();
             $monthly = $monthly->get();
-            $query = DB::getQueryLog();
 
             $schedule = [
                 'sporadic' => $sporadic,
                 'monthly' => $monthly,
-                'query' => $query,
             ];
 
             return response()->json($schedule, 200);

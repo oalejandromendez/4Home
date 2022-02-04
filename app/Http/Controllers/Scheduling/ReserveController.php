@@ -256,7 +256,7 @@ class ReserveController extends Controller
                 $idProfessionals = array_column($request->get('professionals'), 'id');
             }
 
-            $sporadic = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve.service', 'reserve.service.working_day', 'reserve')
+            $sporadic = ReserveDay::with('reserve.professional.novelties', 'reserve.user', 'reserve.customer_address', 'reserve.service', 'reserve.service.working_day', 'reserve')
                 ->whereHas('reserve', function (Builder $query) use ($request) {
 
                     $status = $request->get('status');
@@ -267,7 +267,7 @@ class ReserveController extends Controller
                         $query->where('status', '!=', 1)
                             ->where('status', '!=', 9);
                     }
-                })->whereBetween('date', [$request->get('init') . " 00:00:00", $request->get('end') . " 23:59:59"]);
+                })->whereBetween('date', [$request->get('init'), $request->get('end')]);
 
             if (count($idCustomers) > 0) {
                 $sporadic = $sporadic->whereHas('reserve', function (Builder $query) use ($idCustomers, $request) {
@@ -282,33 +282,26 @@ class ReserveController extends Controller
 
             $sporadic = $sporadic->get();
 
-            $init = (new Carbon($request->get('init') . " 00:00:00"))->subMonth();
-            $monthly = ReserveDay::with('reserve.professional', 'reserve.user', 'reserve.customer_address', 'reserve.service', 'reserve.service.working_day', 'reserve')
-                ->whereHas('reserve', function (Builder $query) use ($request, $init) {
+            $monthly = Reserve::with('user.customer_address', 'customer_address', 'service.working_day', 'reserve_day', 'professional.novelties');
 
-                    $status = $request->get('status');
-                    $query->where('type', 2);
-                    if (!empty($status)) {
-                        $query->where('status', $status);
-                    } else {
-                        $query->where('status', '!=', 1)
-                            ->where('status', '!=', 9);
-                    }
+            $monthly->whereRaw('((initial_service_date <= \'' . $request->get('init') . '\' AND ADDDATE(initial_service_date, INTERVAL 1 month) >= \'' . $request->get('init') . '\')');
+            $monthly->orWhereRaw('(initial_service_date <= \'' . $request->get('end') . '\' AND ADDDATE(initial_service_date, INTERVAL 1 month) >= \'' . $request->get('end') . '\'))');
 
-                    $query->whereBetween('scheduling_date', [$init->toDateString() . " 00:00:00", $request->get('end') . " 23:59:59"]);
-
-                });
+            $status = $request->get('status');
+            $monthly->where('reserve.type', 2);
+            if (!empty($status)) {
+                $monthly->where('reserve.status', $status);
+            } else {
+                $monthly->where('reserve.status', '!=', 1)
+                    ->where('reserve.status', '!=', 9);
+            }
 
             if (count($idCustomers) > 0) {
-                $monthly = $monthly->whereHas('reserve', function (Builder $query) use ($idCustomers, $request) {
-                    $query->whereIn('reserve.user', $idCustomers);
-                });
+                $monthly = $monthly->whereIn('reserve.user', $idCustomers);
             }
 
             if (count($idProfessionals) > 0) {
-                $monthly = $monthly->whereHas('reserve', function (Builder $query) use ($idProfessionals, $request) {
-                    $query->whereIn('reserve.professional', $idProfessionals);
-                });
+                $monthly = $monthly->whereIn('reserve.professional', $idProfessionals);
             }
 
 
