@@ -23,6 +23,7 @@ class ReserveTable extends Migration
             $table->integer('status');
             $table->unsignedInteger('professional')->nullable();
             $table->unsignedInteger('supervisor')->nullable();
+            $table->date('initial_service_date')->nullable();
             $table->timestamp('scheduling_date')->nullable();
             $table->timestamps();
         });

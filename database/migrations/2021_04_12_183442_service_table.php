@@ -22,6 +22,7 @@ class ServiceTable extends Migration
             $table->integer('type');
             $table->integer('quantity');
             $table->integer('status');
+            $table->integer('is_novelty');
             $table->timestamps();
         });
     }
