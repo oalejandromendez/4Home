@@ -30,7 +30,9 @@ class RoleSeeder extends Seeder
             'VER_REPROGRAMACIONES',
             'CREAR_REPROGRAMACIONES',
             'ACCEDER_HISTORIAL_CLIENTE',
-            'VER_TIPO_SERVICIO'
+            'VER_TIPO_SERVICIO',
+            'ACCEDER_JORNADAS',
+            'VER_JORNADAS'
         ]);
 
         $role = Role::create(['name' => 'SERVICIO', 'guard_name' => 'api']);
