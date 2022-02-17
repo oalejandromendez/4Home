@@ -17,7 +17,6 @@ class WorkingDayController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('permission:ACCEDER_JORNADAS');
         $this->middleware('permission:VER_JORNADAS', ['only' => ['index']]);
         $this->middleware('permission:CREAR_JORNADAS', ['only' => ['store']]);
         $this->middleware('permission:MODIFICAR_JORNADAS', ['only' => ['update']]);
